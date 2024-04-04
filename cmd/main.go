@@ -5,21 +5,39 @@ import (
 	"log"
 	"net/http"
 	"os"
+
+	"github.com/dmitrygorban/go_todo-app/database"
+	"github.com/dmitrygorban/go_todo-app/migrations"
 )
 
 const DEFAULT_PORT = ":7540"
+const DEFAULT_DB_PATH = "./scheduler.db"
 
 func main() {
 	portToListen := DEFAULT_PORT
+	dbPath := DEFAULT_DB_PATH
 
 	envPort := os.Getenv("TODO_PORT")
+	if envPort != "" {
+		portToListen = fmt.Sprintf(":%s", envPort)
+	}
 
+	envPathToDb := os.Getenv("DB_PATH")
+	if envPathToDb != "" {
+		dbPath = fmt.Sprintf(":%s", envPathToDb)
+	}
 	fs := http.FileServer(http.Dir("./web"))
 
 	http.Handle("/", fs)
 
-	if envPort != "" {
-		portToListen = fmt.Sprintf(":%s", envPort)
+	db := database.NewSqlliteDatabase(dbPath)
+	defer db.Db.Close()
+
+	storage := database.NewTaskStore(db.Db)
+
+	install := database.DoesDbInstallRequired(dbPath)
+	if install {
+		migrations.TaskMigrate(storage)
 	}
 
 	log.Printf("Server starting on port %s", portToListen)
