@@ -7,6 +7,7 @@ import (
 	"os"
 
 	"github.com/dmitrygorban/go_todo-app/database"
+	"github.com/dmitrygorban/go_todo-app/handlers"
 	"github.com/dmitrygorban/go_todo-app/migrations"
 )
 
@@ -40,8 +41,10 @@ func main() {
 		migrations.TaskMigrate(storage)
 	}
 
-	log.Printf("Server starting on port %s", portToListen)
+	// result, err := utils.NextDate(time.Now(), "20240113", "d 8")
 
+	log.Printf("Server starting on port %s", portToListen)
+	http.HandleFunc("/api/nextdate", handlers.GetNextDate)
 	err := http.ListenAndServe(portToListen, nil)
 	if err != nil {
 		log.Fatal(err)
