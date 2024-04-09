@@ -5,7 +5,7 @@ import (
 	"net/http"
 	"time"
 
-	utils "github.com/dmitrygorban/go_todo-app"
+	"github.com/dmitrygorban/go_todo-app/scheduler"
 )
 
 func GetNextDate(w http.ResponseWriter, r *http.Request) {
@@ -18,7 +18,7 @@ func GetNextDate(w http.ResponseWriter, r *http.Request) {
 		fmt.Fprintf(w, "Error %s", err)
 		return
 	}
-	next, err := utils.NextDate(nowTime, date, repeat)
+	next, err := scheduler.NextDate(nowTime, date, repeat)
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
 		fmt.Fprintf(w, "Error %s", err)
