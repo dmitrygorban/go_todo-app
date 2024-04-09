@@ -41,8 +41,6 @@ func main() {
 		migrations.TaskMigrate(storage)
 	}
 
-	// result, err := utils.NextDate(time.Now(), "20240113", "d 8")
-
 	log.Printf("Server starting on port %s", portToListen)
 	http.HandleFunc("/api/nextdate", handlers.GetNextDate)
 	err := http.ListenAndServe(portToListen, nil)
