@@ -35,14 +35,17 @@ func main() {
 	defer db.Db.Close()
 
 	storage := database.NewTaskStore(db.Db)
+	taskHandler := handlers.NewTaskHandler(storage)
 
 	install := database.DoesDbInstallRequired(dbPath)
 	if install {
 		migrations.TaskMigrate(storage)
 	}
 
-	log.Printf("Server starting on port %s", portToListen)
 	http.HandleFunc("/api/nextdate", handlers.GetNextDate)
+	http.HandleFunc("/api/task", taskHandler.HandleTaskRequests)
+
+	log.Printf("Server starting on port %s", portToListen)
 	err := http.ListenAndServe(portToListen, nil)
 	if err != nil {
 		log.Fatal(err)
