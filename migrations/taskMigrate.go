@@ -9,10 +9,10 @@ import (
 func TaskMigrate(store database.TaskStore) {
 	createTable := `CREATE TABLE IF NOT EXISTS scheduler (
     id INTEGER PRIMARY KEY AUTOINCREMENT, 
-    date CHAR(8) NOT NULL DEFAULT "",
-    title TEXT NOT NULL DEFAULT "",
-    comment TEXT NOT NULL DEFAULT "",
-    repeat VARCHAR(128) NOT NULL DEFAULT ""
+    date CHAR(8) NOT NULL, 
+    title TEXT NOT NULL,
+    comment TEXT DEFAULT NULL, 
+    repeat VARCHAR(128) DEFAULT NULL 
   )`
 
 	createIndex := `CREATE INDEX task_date ON scheduler(date)`
