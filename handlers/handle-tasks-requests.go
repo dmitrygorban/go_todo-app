@@ -9,6 +9,9 @@ func (h *TaskHandler) HandleTaskRequests(w http.ResponseWriter, r *http.Request)
 	case http.MethodPost:
 		h.add(w, r)
 		return
+	case http.MethodGet:
+		h.getById(w, r)
+		return
 	default:
 		handleError(w, "Unsupported HTTP method", http.StatusMethodNotAllowed)
 		return
