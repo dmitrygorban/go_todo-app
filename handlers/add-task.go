@@ -10,10 +10,6 @@ import (
 	"github.com/dmitrygorban/go_todo-app/scheduler"
 )
 
-type TaskCreatedResponse struct {
-	ID string `json:"id"`
-}
-
 func (h *TaskHandler) add(w http.ResponseWriter, r *http.Request) {
 
 	newTask, err := parseRequest(r)
@@ -81,8 +77,8 @@ func calculateDateToSave(task models.Task) (string, error) {
 }
 
 func sendResponse(w http.ResponseWriter, id int) {
-	response := TaskCreatedResponse{
-		ID: strconv.Itoa(id),
+	response := models.Task{
+		Id: strconv.Itoa(id),
 	}
 
 	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
