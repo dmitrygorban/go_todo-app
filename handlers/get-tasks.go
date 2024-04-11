@@ -8,7 +8,8 @@ import (
 )
 
 func (h *TaskHandler) GetTasks(w http.ResponseWriter, r *http.Request) {
-	tasks, err := h.Store.Get()
+	search := r.FormValue("search")
+	tasks, err := h.Store.Get(search)
 	if err != nil {
 		handleError(w, err.Error(), http.StatusInternalServerError)
 		return
