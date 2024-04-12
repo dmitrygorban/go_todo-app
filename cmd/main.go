@@ -8,6 +8,7 @@ import (
 
 	"github.com/dmitrygorban/go_todo-app/database"
 	"github.com/dmitrygorban/go_todo-app/handlers"
+	"github.com/dmitrygorban/go_todo-app/middlewares"
 	"github.com/dmitrygorban/go_todo-app/migrations"
 )
 
@@ -42,10 +43,11 @@ func main() {
 		migrations.TaskMigrate(storage)
 	}
 
+	http.HandleFunc("/api/signin", handlers.SignInHandler)
 	http.HandleFunc("/api/nextdate", handlers.GetNextDate)
-	http.HandleFunc("/api/task", taskHandler.HandleTaskRequests)
-	http.HandleFunc("/api/tasks", taskHandler.GetTasks)
-	http.HandleFunc("/api/task/done", taskHandler.DoneTask)
+	http.HandleFunc("/api/task", middlewares.Auth(taskHandler.HandleTaskRequests))
+	http.HandleFunc("/api/tasks", middlewares.Auth(taskHandler.GetTasks))
+	http.HandleFunc("/api/task/done", middlewares.Auth(taskHandler.DoneTask))
 
 	log.Printf("Server starting on port %s", portToListen)
 	err := http.ListenAndServe(portToListen, nil)
