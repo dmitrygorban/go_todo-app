@@ -15,6 +15,9 @@ func (h *TaskHandler) HandleTaskRequests(w http.ResponseWriter, r *http.Request)
 	case http.MethodPut:
 		h.edit(w, r)
 		return
+	case http.MethodDelete:
+		h.delete(w, r)
+		return
 	default:
 		handleError(w, "Unsupported HTTP method", http.StatusMethodNotAllowed)
 		return
