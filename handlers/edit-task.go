@@ -13,6 +13,11 @@ func (h *TaskHandler) edit(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	if task.Title == "" {
+		handleError(w, "title is required", http.StatusBadRequest)
+		return
+	}
+
 	idInt, err := strconv.ParseInt(task.Id, 10, 0)
 	if err != nil {
 		handleError(w, err.Error(), http.StatusBadRequest)
@@ -38,9 +43,16 @@ func (h *TaskHandler) edit(w http.ResponseWriter, r *http.Request) {
 		handleError(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
+	err = emptyOkResponse(w)
+	if err != nil {
+		handleError(w, err.Error(), http.StatusInternalServerError)
+	}
+}
+
+func emptyOkResponse(w http.ResponseWriter) error {
 
 	response := make(map[string]interface{})
 	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
 	w.WriteHeader(http.StatusOK)
-	json.NewEncoder(w).Encode(response)
+	return json.NewEncoder(w).Encode(response)
 }
