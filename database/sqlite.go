@@ -2,8 +2,7 @@ package database
 
 import (
 	"database/sql"
-
-	_ "github.com/mattn/go-sqlite3"
+	_ "modernc.org/sqlite"
 )
 
 type sqliteDatabase struct {
@@ -11,7 +10,7 @@ type sqliteDatabase struct {
 }
 
 func NewSqlliteDatabase(pathToDbFile string) *sqliteDatabase {
-	db, err := sql.Open("sqlite3", pathToDbFile)
+	db, err := sql.Open("sqlite", pathToDbFile)
 	if err != nil {
 		panic("failed to connect to database")
 	}
