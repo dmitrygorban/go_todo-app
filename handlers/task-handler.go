@@ -1,11 +1,11 @@
 package handlers
 
-import "github.com/dmitrygorban/go_todo-app/database"
+import "github.com/dmitrygorban/go_todo-app/storage"
 
 type TaskHandler struct {
-	Store database.TaskStore
+	Store storage.TaskStore
 }
 
-func NewTaskHandler(store database.TaskStore) *TaskHandler {
+func NewTaskHandler(store storage.TaskStore) *TaskHandler {
 	return &TaskHandler{Store: store}
 }
