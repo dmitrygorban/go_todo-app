@@ -3,10 +3,10 @@ package migrations
 import (
 	"log"
 
-	"github.com/dmitrygorban/go_todo-app/database"
+	"github.com/dmitrygorban/go_todo-app/storage"
 )
 
-func TaskMigrate(store database.TaskStore) {
+func TaskMigrate(store storage.TaskStore) {
 	createTable := `CREATE TABLE IF NOT EXISTS scheduler (
     id INTEGER PRIMARY KEY AUTOINCREMENT, 
     date CHAR(8) NOT NULL, 
