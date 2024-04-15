@@ -3,13 +3,11 @@ package main
 import (
 	"fmt"
 	"log"
-	"net/http"
 	"os"
 
-	"github.com/dmitrygorban/go_todo-app/database"
-	"github.com/dmitrygorban/go_todo-app/handlers"
-	"github.com/dmitrygorban/go_todo-app/middlewares"
 	"github.com/dmitrygorban/go_todo-app/migrations"
+	"github.com/dmitrygorban/go_todo-app/server"
+	"github.com/dmitrygorban/go_todo-app/storage"
 )
 
 const DEFAULT_PORT = ":7540"
@@ -28,29 +26,18 @@ func main() {
 	if envPathToDb != "" {
 		dbPath = fmt.Sprintf(":%s", envPathToDb)
 	}
-	fs := http.FileServer(http.Dir("./web"))
 
-	http.Handle("/", fs)
+	store := storage.NewTaskStore(dbPath)
+	defer store.Db.Close()
 
-	db := database.NewSqlliteDatabase(dbPath)
-	defer db.Db.Close()
-
-	storage := database.NewTaskStore(db.Db)
-	taskHandler := handlers.NewTaskHandler(storage)
-
-	install := database.DoesDbInstallRequired(dbPath)
+	install := storage.DoesDBInstallRequired(dbPath)
 	if install {
-		migrations.TaskMigrate(storage)
+		migrations.TaskMigrate(store)
 	}
 
-	http.HandleFunc("/api/signin", handlers.SignInHandler)
-	http.HandleFunc("/api/nextdate", handlers.GetNextDate)
-	http.HandleFunc("/api/task", middlewares.Auth(taskHandler.HandleTaskRequests))
-	http.HandleFunc("/api/tasks", middlewares.Auth(taskHandler.GetTasks))
-	http.HandleFunc("/api/task/done", middlewares.Auth(taskHandler.DoneTask))
+	httpServer := server.NewServer(portToListen)
+	err := httpServer.Start(store)
 
-	log.Printf("Server starting on port %s", portToListen)
-	err := http.ListenAndServe(portToListen, nil)
 	if err != nil {
 		log.Fatal(err)
 	}
