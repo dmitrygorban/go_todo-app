@@ -1,11 +1,14 @@
-FROM ubuntu:latest
+FROM golang:1.22.0 
 
 WORKDIR /todo-app
 
-COPY todo-app ./
-COPY web ./web
+COPY . .
 
-ARG TODO_PORT
+RUN go mod tidy
+
+RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -o ./todo-app ./cmd/main.go
+
+ARG TODO_PORT=7540
 ARG TODO_DBFILE
 ARG TODO_PASSWORD
 ARG TODO_SECRET
