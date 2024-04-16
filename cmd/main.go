@@ -30,8 +30,7 @@ func main() {
 	store := storage.NewTaskStore(dbPath)
 	defer store.Db.Close()
 
-	install := storage.DoesDBInstallRequired(dbPath)
-	if install {
+	if store.NeedMigration(dbPath) {
 		migrations.TaskMigrate(store)
 	}
 

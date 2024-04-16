@@ -38,7 +38,7 @@ func (h *TaskHandler) edit(w http.ResponseWriter, r *http.Request) {
 
 	task.Date = newDate
 
-	err = h.Store.UpdateTask(task)
+	err = h.Store.Update(task)
 	if err != nil {
 		handleError(w, err.Error(), http.StatusInternalServerError)
 		return
