@@ -24,24 +24,30 @@ func NewTaskStore(pathToDatabaseFile string) TaskStore {
 	return TaskStore{Db: db}
 }
 
-func (s *TaskStore) Get(searchQueryParam string) ([]models.Task, error) {
+func (s *TaskStore) Get(filter string) ([]models.Task, error) {
 	var tasks []models.Task
 	var rows *sql.Rows
 	var err error
 
-	if searchQueryParam != "" {
-		date, err := time.Parse("02.01.2006", searchQueryParam)
-		if err == nil {
-			rows, err = s.Db.Query("SELECT id, date, title, comment, repeat FROM scheduler WHERE date LIKE :search ORDER BY DATE;",
-				sql.Named("search", date.Format(scheduler.DATE_FORMAT)))
-		} else {
-			rows, err = s.Db.Query("SELECT id, date, title, comment, repeat FROM scheduler WHERE title LIKE :search OR comment LIKE :search ORDER BY DATE;",
-				sql.Named("search", "%"+searchQueryParam+"%"),
-			)
-		}
-	} else {
+	if filter == "" {
 		query := "SELECT id, date, title, comment, repeat FROM scheduler ORDER BY DATE;"
 		rows, err = s.Db.Query(query)
+	}
+
+	if filter != "" {
+		var query string
+		var searchParam interface{}
+
+		date, err := time.Parse("02.01.2006", filter)
+		if err == nil {
+			query = "SELECT id, date, title, comment, repeat FROM scheduler WHERE date LIKE :search ORDER BY DATE;"
+			searchParam = date.Format(scheduler.DATE_FORMAT)
+		} else {
+			query = "SELECT id, date, title, comment, repeat FROM scheduler WHERE title LIKE :search OR comment LIKE :search ORDER BY DATE;"
+			searchParam = "%" + filter + "%"
+		}
+
+		rows, err = s.Db.Query(query, sql.Named("search", searchParam))
 	}
 
 	if err != nil {
@@ -106,7 +112,7 @@ func (s *TaskStore) Delete(id int) error {
 	return err
 }
 
-func (s *TaskStore) UpdateTask(task models.Task) error {
+func (s *TaskStore) Update(task models.Task) error {
 	_, err := s.Db.Exec("UPDATE scheduler SET date = :date, title = :title, comment = :comment, repeat = :repeat WHERE id = :id",
 		sql.Named("date", task.Date),
 		sql.Named("title", task.Title),
@@ -121,7 +127,7 @@ func (s *TaskStore) UpdateTask(task models.Task) error {
 	return nil
 }
 
-func DoesDBInstallRequired(pathToFile string) bool {
+func (s *TaskStore) NeedMigration(pathToFile string) bool {
 	appPath, err := os.Getwd()
 
 	if err != nil {
@@ -131,9 +137,5 @@ func DoesDBInstallRequired(pathToFile string) bool {
 	dbFile := filepath.Join(appPath, pathToFile)
 	_, err = os.Stat(dbFile)
 
-	if os.IsNotExist(err) {
-		return true
-	}
-
-	return false
+	return os.IsNotExist(err)
 }

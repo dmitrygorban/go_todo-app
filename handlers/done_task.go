@@ -36,7 +36,7 @@ func (h *TaskHandler) DoneTask(w http.ResponseWriter, r *http.Request) {
 
 	task.Date = nextRepeatDate
 
-	err = h.Store.UpdateTask(task)
+	err = h.Store.Update(task)
 	if err != nil {
 		handleError(w, err.Error(), http.StatusInternalServerError)
 		return
