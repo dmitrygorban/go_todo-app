@@ -5,6 +5,7 @@ import (
 	"log"
 	"os"
 
+	"github.com/dmitrygorban/go_todo-app/handlers"
 	"github.com/dmitrygorban/go_todo-app/migrations"
 	"github.com/dmitrygorban/go_todo-app/server"
 	"github.com/dmitrygorban/go_todo-app/storage"
@@ -33,8 +34,9 @@ func main() {
 	if store.NeedMigration(dbPath) {
 		migrations.TaskMigrate(store)
 	}
+	taskHandler := handlers.NewTaskHandler(store)
+	httpServer := server.NewServer(portToListen, taskHandler)
 
-	httpServer := server.NewServer(portToListen)
 	err := httpServer.Start(store)
 
 	if err != nil {

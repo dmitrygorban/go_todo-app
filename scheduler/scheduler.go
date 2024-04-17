@@ -12,7 +12,7 @@ func NextDate(now time.Time, date string, repeat string) (string, error) {
 		return "", errors.New("an error occured with repeat parameter: repeat is empty")
 	}
 
-	dateTime, err := time.Parse(DATE_FORMAT, date)
+	dateTime, err := time.Parse(DateFormat, date)
 	if err != nil {
 		return "", err
 	}
@@ -20,7 +20,7 @@ func NextDate(now time.Time, date string, repeat string) (string, error) {
 	repeatSlice := strings.Split(repeat, " ")
 	repeatPeriodLetter := repeatSlice[0]
 
-	_, ok := ALLOWED_REPEATS_MAP[repeatPeriodLetter]
+	_, ok := AllowedRepeatsMap[repeatPeriodLetter]
 	if !ok {
 		return "", fmt.Errorf("error parsing period: %s is not valid letter", repeatPeriodLetter)
 	}

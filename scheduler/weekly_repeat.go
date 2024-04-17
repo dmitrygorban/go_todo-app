@@ -43,7 +43,7 @@ func nextWeeklyRepeat(now time.Time, repeatLetter string, repeatSlice []string) 
 		if err != nil {
 			return "", fmt.Errorf("repeat count for days should be a number but got %s\n", day)
 		}
-		if dayInt > int64(ALLOWED_REPEATS_MAP[repeatLetter]) {
+		if dayInt > int64(AllowedRepeatsMap[repeatLetter]) {
 			return "", fmt.Errorf("repeat count for days must not be greater than 7 but got %d", dayInt)
 		}
 		repeatWeekDaysInts = append(repeatWeekDaysInts, int(dayInt))

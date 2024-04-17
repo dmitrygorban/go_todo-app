@@ -41,7 +41,7 @@ func (s *TaskStore) Get(filter string) ([]models.Task, error) {
 		date, err := time.Parse("02.01.2006", filter)
 		if err == nil {
 			query = "SELECT id, date, title, comment, repeat FROM scheduler WHERE date LIKE :search ORDER BY DATE;"
-			searchParam = date.Format(scheduler.DATE_FORMAT)
+			searchParam = date.Format(scheduler.DateFormat)
 		} else {
 			query = "SELECT id, date, title, comment, repeat FROM scheduler WHERE title LIKE :search OR comment LIKE :search ORDER BY DATE;"
 			searchParam = "%" + filter + "%"

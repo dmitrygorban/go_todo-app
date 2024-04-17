@@ -16,7 +16,7 @@ func nextMonthlyRepeat(now, dateTime time.Time, repeatLetter string, repeatOptio
 	}
 
 	days, err := parseIntSlice(repeatOptions[1], func(n int) bool {
-		return n >= -2 && n <= ALLOWED_REPEATS_MAP[repeatLetter]
+		return n >= -2 && n <= AllowedRepeatsMap[repeatLetter]
 	})
 
 	if err != nil {

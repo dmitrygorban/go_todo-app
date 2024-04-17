@@ -55,7 +55,7 @@ func calculateDateToSave(task models.Task) (string, error) {
 	var err error
 
 	if task.Date != "" {
-		dateTime, err = time.Parse(scheduler.DATE_FORMAT, task.Date)
+		dateTime, err = time.Parse(scheduler.DateFormat, task.Date)
 		if err != nil {
 			return "", err
 		}
@@ -64,16 +64,16 @@ func calculateDateToSave(task models.Task) (string, error) {
 	}
 
 	if dateTime.Before(now) && task.Repeat != "" {
-		nextDate, err := scheduler.NextDate(now, dateTime.Format(scheduler.DATE_FORMAT), task.Repeat)
+		nextDate, err := scheduler.NextDate(now, dateTime.Format(scheduler.DateFormat), task.Repeat)
 		if err != nil {
 			return "", err
 		}
 		return nextDate, nil
 	} else if dateTime.Before(now) && task.Repeat == "" {
-		return now.Format(scheduler.DATE_FORMAT), nil
+		return now.Format(scheduler.DateFormat), nil
 	}
 
-	return dateTime.Format(scheduler.DATE_FORMAT), nil
+	return dateTime.Format(scheduler.DateFormat), nil
 }
 
 func sendResponse(w http.ResponseWriter, id int) {
