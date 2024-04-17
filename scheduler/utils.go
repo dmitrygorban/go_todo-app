@@ -9,7 +9,7 @@ import (
 )
 
 func format(date time.Time) string {
-	return date.Format(DATE_FORMAT)
+	return date.Format(DateFormat)
 }
 
 func prepareDays(now time.Time, days []int) []int {

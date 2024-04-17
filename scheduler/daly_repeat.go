@@ -16,7 +16,7 @@ func nextDailyRepeat(now, dateTime time.Time, periodLetter string, repeatSlice [
 	if err != nil {
 		return "", fmt.Errorf("repeat count for days should be a number but got %s\n", repeatPeriodCount)
 	}
-	if int(count) > ALLOWED_REPEATS_MAP[periodLetter] {
+	if int(count) > AllowedRepeatsMap[periodLetter] {
 		return "", fmt.Errorf("repeat count for days must not be greater than 7 but got %d", count)
 	}
 

@@ -1,8 +1,8 @@
 package scheduler
 
-const DATE_FORMAT = "20060102"
+const DateFormat = "20060102"
 
-var ALLOWED_REPEATS_MAP = map[string]int{
+var AllowedRepeatsMap = map[string]int{
 	"d": 400,
 	"w": 7,
 	"m": 31,
